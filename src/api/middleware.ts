@@ -25,3 +25,31 @@ export async function middlewareMetricsInc(
 	config.fileserverHits++;
 	next();
 }
+
+export async function middlewareJSONBodyParser(
+	req: Request,
+	res: Response,
+	next: NextFunction
+) {
+	let body = "";
+
+	req.on("data", (chunk) => {
+		body += chunk;
+	});
+
+	req.on("end", () => {
+		if (!body) {
+			return next();
+		}
+		try {
+			req.body = JSON.parse(body);
+			next();
+		} catch (err) {
+			res.status(400).json({ error: "Invalid JSON" });
+		}
+	});
+
+	req.on("error", () => {
+		res.status(400).json({ error: "Error reading request body" });
+	});
+}
