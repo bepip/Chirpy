@@ -22,7 +22,7 @@ export async function middlewareMetricsInc(
 	res: Response,
 	next: NextFunction
 ) {
-	config.fileserverHits++;
+	config.api.fileserverHits++;
 	next();
 }
 

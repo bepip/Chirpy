@@ -8,8 +8,7 @@ export async function handlerValidate(req: Request, res: Response) {
 	};
 	const params: parameter = req.body;
 	if (!params.body) {
-		res.status(400).json({ error: "Something went wrong" });
-		return;
+		throw new BadRequestError("body not provided");
 	}
 	if (params.body.length > 140) {
 		throw new BadRequestError("Chirp is too long. Max length is 140");
