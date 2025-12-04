@@ -1,5 +1,6 @@
 import express, { Response, Request } from "express";
 import { config } from "../config.js";
+import { BadRequestError } from "./error.js";
 
 export async function handlerValidate(req: Request, res: Response) {
 	type parameter = {
@@ -7,10 +8,11 @@ export async function handlerValidate(req: Request, res: Response) {
 	};
 	const params: parameter = req.body;
 	if (!params.body) {
-		return res.status(400).json({ error: "Something went wrong" });
+		res.status(400).json({ error: "Something went wrong" });
+		return;
 	}
 	if (params.body.length > 140) {
-		return res.status(400).json({ error: "Chirp is too long" });
+		throw new BadRequestError("Chirp is too long. Max length is 140");
 	}
 
 	const profaneWords = ["kerfuffle", "sharbert", "fornax"];
@@ -22,5 +24,6 @@ export async function handlerValidate(req: Request, res: Response) {
 		}
 		return word;
 	});
-	return res.status(200).json({ cleanedBody: filteredWords.join(" ") });
+	res.status(200).json({ cleanedBody: filteredWords.join(" ") });
+	return;
 }
