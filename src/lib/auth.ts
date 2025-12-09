@@ -34,7 +34,7 @@ export function makeJWT(userID: string, secret: string = config.jwt.secret): str
 	return jwt.sign(payload, secret, { algorithm: "HS256" });
 }
 
-export function validateJWT(tokenString: string, secret: string): string {
+export function validateJWT(tokenString: string, secret: string = config.jwt.secret): string {
 	try {
 		const payload: payload = jwt.verify(tokenString, secret) as payload;
 		if (!payload.sub || !payload.iss || payload.iss != TOKEN_ISSUER) {
@@ -49,11 +49,11 @@ export function validateJWT(tokenString: string, secret: string): string {
 export function getBearerToken(req: Request): string {
 	const authHeader = req.get("Authorization");
 	if (!authHeader) {
-		throw new BadRequestError("No token found");
+		throw new UnauthorizedError("No token found");
 	}
 	const parts = authHeader.split(" ");
 	if (parts.length !== 2 || parts[0] !== "Bearer") {
-		throw new BadRequestError("Wrong header");
+		throw new UnauthorizedError("Wrong header");
 	}
 	return parts[1];
 }
