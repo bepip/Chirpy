@@ -1,21 +1,24 @@
 import { Request, Response } from "express";
 import { BadRequestError, NotFoundError } from "./error.js";
 import { createChirp, getChirps, getChrip } from "../db/queries/chirps.js";
+import { getBearerToken, validateJWT } from "../lib/auth.js";
+import { config } from "../config.js";
 
 export async function handlerChirpsCreate(req: Request, res: Response) {
+	const token = getBearerToken(req);
+	const userID = validateJWT(token, config.jwt.secret);
 	type parameter = {
 		body: string,
-		userId: string
 	}
 
 	const params: parameter = req.body;
-	if (!params.body || !params.body) {
+	if (!params.body) {
 		throw new BadRequestError("Missing parameters");
 	}
 
 	const body = validateChirp(params.body);
 
-	const chirp = await createChirp({ body, userId: params.userId });
+	const chirp = await createChirp({ body, userId: userID });
 
 	res.status(201).json({
 		id: chirp.id,

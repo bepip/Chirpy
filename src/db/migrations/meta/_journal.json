@@ -15,6 +15,20 @@
       "when": 1764865425984,
       "tag": "0001_young_quasar",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1765291959418,
+      "tag": "0002_wild_tusk",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1765310333567,
+      "tag": "0003_cuddly_white_queen",
+      "breakpoints": true
     }
   ]
 }
