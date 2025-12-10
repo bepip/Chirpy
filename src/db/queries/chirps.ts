@@ -13,6 +13,14 @@ export async function getChirps() {
 	return result;
 }
 
+export async function getChirpsFromAuthorId(id: string) {
+	const result = await db.select()
+		.from(chirps)
+		.where(eq(chirps.userId, id))
+		.orderBy(asc(chirps.createdAt));
+	return result;
+}
+
 export async function getChrip(chirpID: string) {
 	const result = await db.select().from(chirps).where(eq(chirps.id, chirpID));
 	if (result.length === 0) {

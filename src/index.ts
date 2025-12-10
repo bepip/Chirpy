@@ -11,6 +11,7 @@ import { migrate } from "drizzle-orm/postgres-js/migrator";
 import { handlerCreateUser, handlerUpdateUser } from "./api/users.js";
 import { handlerChirpsCreate, handlerChirpsGetAll, handlerChirpsRetrieve, handlerDeleteChirp } from "./api/chirps.js";
 import { handlerLogin, handlerRefresh, handlerRevoke } from "./api/login.js";
+import { handlerPolka } from "./api/webhooks.js";
 
 const migrationClient = postgres(config.db.url, { max: 1 });
 await migrate(drizzle(migrationClient), config.db.migrationConfig);
@@ -33,8 +34,10 @@ app.get("/api/healthz", async (req, res, next) => {
 	}
 });
 
+//admin
 app.get("/admin/metrics", errorHandler(handlerMetrics));
 app.post("/admin/reset", errorHandler(handlerMetricsReset));
+//api
 app.post("/api/users", errorHandler(handlerCreateUser));
 app.put("/api/users", errorHandler(handlerUpdateUser));
 app.post("/api/chirps", errorHandler(handlerChirpsCreate));
@@ -44,6 +47,9 @@ app.delete("/api/chirps/:chirpID", errorHandler(handlerDeleteChirp));
 app.post("/api/login", errorHandler(handlerLogin));
 app.post("/api/refresh", errorHandler(handlerRefresh));
 app.post("/api/revoke", errorHandler(handlerRevoke));
+//api/polka/
+app.post("/api/polka/webhooks", errorHandler(handlerPolka));
+
 
 app.use(middlewareError);
 

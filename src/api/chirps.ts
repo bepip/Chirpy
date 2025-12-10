@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
 import { BadRequestError, ForbiddenError, NotFoundError } from "./error.js";
-import { createChirp, deleteChirp, getChirps, getChrip } from "../db/queries/chirps.js";
+import { createChirp, deleteChirp, getChirps, getChirpsFromAuthorId, getChrip } from "../db/queries/chirps.js";
 import { getBearerToken, validateJWT } from "../lib/auth.js";
 import { config } from "../config.js";
+import { NewChirp } from "src/db/schema.js";
 
 export async function handlerChirpsCreate(req: Request, res: Response) {
 	const token = getBearerToken(req);
@@ -30,7 +31,25 @@ export async function handlerChirpsCreate(req: Request, res: Response) {
 }
 
 export async function handlerChirpsGetAll(req: Request, res: Response) {
-	const chirps = await getChirps();
+	type ChirpsResponse = {
+		body: string,
+		userId: string,
+		id: string,
+		createdAt: Date,
+		updatedAt: Date
+	};
+
+	const authorId = req.query.authorId as string;
+	const sort = req.query.sort as string;
+	let chirps: ChirpsResponse[];
+	if (authorId) {
+		chirps = await getChirpsFromAuthorId(authorId);
+	} else {
+		chirps = await getChirps();
+	}
+	if (sort === "desc") {
+		chirps.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+	}
 	res.status(200).json(chirps);
 }
 

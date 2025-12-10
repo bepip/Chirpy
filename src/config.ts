@@ -15,6 +15,7 @@ type APIConfig = {
 	fileserverHits: number;
 	port: number;
 	platform: string;
+	polkaKey: string;
 };
 
 type JWTConfig = {
@@ -45,6 +46,7 @@ export const config: Config = {
 		fileserverHits: 0,
 		port: Number(envOrThrow("PORT")),
 		platform: envOrThrow("PLATFORM"),
+		polkaKey: envOrThrow("POLKA_KEY"),
 	},
 	jwt: {
 		accessTokenDuration: 60 * 60,
